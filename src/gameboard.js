@@ -5,23 +5,25 @@ export class Gameboard {
     this.missedShots = [];
   }
 
-  #isValidCell(row, column) {
+  #isValidCell({ row, column }) {
     return ((0 <= row && row < 10) && (0 <= column && column < 10))
   }
 
-  #isCellOccupied(row, column) {
+  #isCellOccupied({ row, column }) {
     return (this.grid[row][column] !== null)
   }
 
-  #isValidShipPlacement(ship, row, column, orientation) {
+  #isValidShipPlacement(ship, position, orientation) {
     const rowStep = orientation === 'vertical' ? 1 : 0;
     const columnStep = orientation === 'horizontal' ? 1 : 0;
 
     for (let i = 0; i < ship.length; i++) {
-      const nextRow = row + i * rowStep;
-      const nextColumn = column + i * columnStep;
+      const nextPosition = {
+        row: position.row + i * rowStep,
+        column: position.column + i * columnStep,
+      };
 
-      if (!this.#isValidCell(nextRow, nextColumn) || this.#isCellOccupied(nextRow, nextColumn)) {
+      if (!this.#isValidCell(nextPosition) || this.#isCellOccupied(nextPosition)) {
         return false;
       }
     }
@@ -29,30 +31,30 @@ export class Gameboard {
     return true;
   }
 
-  placeShip(ship, row, column, orientation) {
-    if (!this.#isValidShipPlacement(ship, row, column, orientation)) {
+  placeShip(ship, position, orientation) {
+    if (!this.#isValidShipPlacement(ship, position, orientation)) {
       throw new RangeError('Ship placement is out of bounds or overlaps another ship.');
     }
 
     for (let i = 0; i < ship.length; i++) {
       if (orientation === 'horizontal') {
-        this.grid[row][column + i] = ship;
+        this.grid[position.row][position.column + i] = ship;
       } else {
-        this.grid[row + i][column] = ship;
+        this.grid[position.row + i][position.column] = ship;
       }
     }
 
     this.ships.push(ship);
   }
 
-  receiveAttack(row, column) {
-    if (!this.#isValidCell(row, column)) {
+  receiveAttack(position) {
+    if (!this.#isValidCell(position)) {
       throw new RangeError('Attack coordinates are out of bounds.');
     }
 
-    const target = this.grid[row][column];
+    const target = this.grid[position.row][position.column];
     if (target === null) {
-      this.missedShots.push([row, column]);
+      this.missedShots.push({ row: position.row, column: position.column });
     } else {
       target.hit();
     }
