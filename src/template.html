@@ -3,9 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Battlehip</title>
+  <title>Battleship</title>
 </head>
 <body>
-  test
+  <main>
+    <h1>Battleship</h1>
+    <p id="game-status">Your turn. Choose a square on the computer's board.</p>
+
+    <div class="boards">
+      <section>
+        <h2>Your board</h2>
+        <div id="player-board" class="gameboard"></div>
+      </section>
+
+      <section>
+        <h2>Computer's board</h2>
+        <div id="computer-board" class="gameboard"></div>
+      </section>
+    </div>
+
+    <button id="new-game" type="button">New game</button>
+  </main>
 </body>
 </html>
