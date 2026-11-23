@@ -1,12 +1,12 @@
-import { Player } from 'src/player.js';
-import { Ship } from 'src/ship.js';
+import { Player } from './player.js';
+import { Ship } from './ship.js';
 
 let player;
 let opponent;
 
 // This function is used to create each player's board.
 function renderBoard(element, gameboard, showShips) {
-  element.replaceChildren(); // Remove element's child nodes (clear the board).
+  element.replaceChildren(); // Remove a player's child nodes (clear the board).
 
   gameboard.grid.forEach((row, rowIndex) => {
     row.forEach((cell, columnIndex) => {
@@ -38,4 +38,7 @@ function startNewGame() {
   document.querySelector('#game-status').textContent = "Your turn. Choose a square on the opponent's board.";
 }
 
-
+export function initializeDomController() {
+  document.querySelector('#new-game').addEventListener('click', startNewGame);
+  startNewGame();
+}

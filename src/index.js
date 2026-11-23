@@ -1,1 +1,4 @@
-import { renderBoard } from 'src/dom-controller.js';
+import { initializeDomController } from './dom-controller.js';
+import './style.css';
+
+initializeDomController();

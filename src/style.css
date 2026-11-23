@@ -1,0 +1,30 @@
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.gameboard {
+  display: grid;
+  grid-template-columns: repeat(10, 2rem);
+  gap: 2px;
+  width: max-content;
+}
+
+.boards {
+  display: flex;
+  gap: 2rem;
+}
+
+.cell {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+}
+
+.cell.ship {
+  background-color: steelblue;
+}
+
+button#new-game {
+  margin: 1rem;
+}
+
