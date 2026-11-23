@@ -7,6 +7,28 @@ let gameOver = false;
 let isPlayerTurn = true;
 let computerTurnTimer;
 
+function renderShipFleet(element) {
+  element.replaceChildren();
+
+  for (let length = 1; length <= 5; length++) {
+    const ship = document.createElement('div');
+    ship.classList.add('fleet-ship');
+
+    const cells = document.createElement('div');
+    cells.classList.add('fleet-ship-cells');
+
+    for (let i = 0; i < length; i++) {
+      const cell = document.createElement('span');
+      cell.classList.add('fleet-cell');
+      cell.setAttribute('aria-hidden', 'true');
+      cells.append(cell);
+    }
+
+    ship.append(cells);
+    element.append(ship);
+  }
+}
+
 // This function is used to create each player's board.
 function renderBoard(element, gameboard, showShips) {
   element.replaceChildren(); // Remove a player's child nodes (clear the board).
@@ -115,6 +137,7 @@ function startNewGame() {
 
   renderBoard(document.querySelector('#player-board'), player.gameboard, true);
   renderBoard(document.querySelector('#opponent-board'), opponent.gameboard, false);
+  renderShipFleet(document.querySelector('#ship-fleet'));
 }
 
 export function initializeDomController() {

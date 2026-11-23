@@ -36,3 +36,27 @@ button#new-game {
   background-color: lightgray;
 }
 
+.ship-fleet {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.fleet-ship {
+  display: flex;
+}
+
+.fleet-ship-cells {
+  display: flex;
+  gap: 2px;
+}
+
+.fleet-cell {
+  box-sizing: border-box;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid #555;
+  background-color: steelblue;
+}
+
