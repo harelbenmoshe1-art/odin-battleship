@@ -1,8 +1,3 @@
-const SHIP_DIRECTIONS = {
-  horizontal: { row: 0, column: 1 },
-  vertical: { row: 1, column: 0 },
-};
-
 export class Gameboard {
   constructor() {
     this.grid = Array.from({ length: 10 }, () => Array(10).fill(null));
@@ -18,11 +13,11 @@ export class Gameboard {
       && 0 <= column && column < 10;
   }
 
-  #isValidShipPlacement(ship, position, direction) {
+  #isValidShipPlacement(ship, position) {
     for (let i = 0; i < ship.length; i++) {
       const nextPosition = {
-        row: position.row + i * direction.row,
-        column: position.column + i * direction.column,
+        row: position.row,
+        column: position.column + i,
       };
 
       if (!this.#isValidCell(nextPosition) || this.grid[nextPosition.row][nextPosition.column] !== null) {
@@ -38,20 +33,13 @@ export class Gameboard {
     return this.hitShots.some(wasAttacked) || this.missedShots.some(wasAttacked);
   }
 
-  placeShip(ship, position, orientation) {
-    if (orientation !== 'horizontal' && orientation !== 'vertical') {
-      throw new RangeError('Ship orientation must be horizontal or vertical.');
-    }
-    const direction = SHIP_DIRECTIONS[orientation];
-
-    if (!this.#isValidShipPlacement(ship, position, direction)) {
+  placeShip(ship, position) {
+    if (!this.#isValidShipPlacement(ship, position)) {
       throw new RangeError('Ship placement is out of bounds or overlaps another ship.');
     }
 
     for (let i = 0; i < ship.length; i++) {
-      const row = position.row + i * direction.row;
-      const column = position.column + i * direction.column;
-      this.grid[row][column] = ship;
+      this.grid[position.row][position.column + i] = ship;
     }
 
     this.ships.push(ship);
