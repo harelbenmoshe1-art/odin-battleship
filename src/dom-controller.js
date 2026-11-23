@@ -12,6 +12,7 @@ let computerTurnTimer;
 
 function renderShipFleet(element, ships) {
   element.replaceChildren();
+  document.querySelector('#fleet-section').hidden = ships.length === 0;
 
   for (const shipModel of ships) {
     const shipElement = document.createElement('div');
