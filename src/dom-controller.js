@@ -16,6 +16,11 @@ function renderBoard(element, gameboard, showShips) {
       square.dataset.row = rowIndex;
       square.dataset.column = columnIndex;
 
+      const wasHit = gameboard.hitShots.some((shot) => shot.row === rowIndex && shot.column === columnIndex);
+      const wasMissed = gameboard.missedShots.some((shot) => shot.row === rowIndex && shot.column === columnIndex);
+
+      if (wasHit) square.classList.add('hit');
+      if (wasMissed) square.classList.add('miss');
 
       if (showShips && cell !== null) {
         square.classList.add('ship');
@@ -24,6 +29,21 @@ function renderBoard(element, gameboard, showShips) {
       element.append(square);
     });
   });
+}
+
+function handleOpponentBoardClick(event) {
+  const square = event.target.closest('.cell');
+  if (square === null) return;
+
+  const position = {
+    row: Number(square.dataset.row),
+    column: Number(square.dataset.column)
+  };
+
+  const result = opponent.gameboard.receiveAttack(position);
+  if (result.alreadyAttacked) return;
+
+  renderBoard(document.querySelector('#opponent-board'), opponent.gameboard, false);
 }
 
 function startNewGame() {
@@ -40,5 +60,6 @@ function startNewGame() {
 
 export function initializeDomController() {
   document.querySelector('#new-game').addEventListener('click', startNewGame);
+  document.querySelector('#opponent-board').addEventListener('click', handleOpponentBoardClick);
   startNewGame();
 }

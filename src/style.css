@@ -28,3 +28,11 @@ button#new-game {
   margin: 1rem;
 }
 
+.cell.hit {
+  background-color: crimson;
+}
+
+.cell.miss {
+  background-color: lightgray;
+}
+
