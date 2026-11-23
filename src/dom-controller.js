@@ -3,6 +3,9 @@ import { Ship } from './ship.js';
 
 let player;
 let opponent;
+let gameOver = false;
+let isPlayerTurn = true;
+let computerTurnTimer;
 
 // This function is used to create each player's board.
 function renderBoard(element, gameboard, showShips) {
@@ -32,21 +35,78 @@ function renderBoard(element, gameboard, showShips) {
 }
 
 function handleOpponentBoardClick(event) {
+  if (gameOver || !isPlayerTurn) return;
+
   const square = event.target.closest('.cell');
   if (square === null) return;
 
   const position = {
     row: Number(square.dataset.row),
-    column: Number(square.dataset.column)
+    column: Number(square.dataset.column),
   };
 
   const result = opponent.gameboard.receiveAttack(position);
   if (result.alreadyAttacked) return;
 
   renderBoard(document.querySelector('#opponent-board'), opponent.gameboard, false);
+
+  const status = document.querySelector('#game-status');
+  if (opponent.gameboard.areAllShipsSunk()) {
+    gameOver = true;
+    status.textContent = 'You win! Game over.';
+    return;
+  }
+
+  isPlayerTurn = false;
+  status.textContent = "Opponent's turn. Waiting...";
+  computerTurnTimer = setTimeout(computerTurn, 500);
+}
+
+function wasAttacked(gameboard, position) {
+  const isSamePosition = (shot) => shot.row === position.row && shot.column === position.column;
+  return gameboard.hitShots.some(isSamePosition) || gameboard.missedShots.some(isSamePosition);
+}
+
+function getRandomAvailablePosition(gameboard) {
+  const availablePositions = [];
+
+  for (let row = 0; row < gameboard.grid.length; row++) {
+    for (let column = 0; column < gameboard.grid[row].length; column++) {
+      const position = { row, column };
+
+      if (!wasAttacked(gameboard, position)) {
+        availablePositions.push(position);
+      }
+    }
+  }
+
+  const randomIndex = Math.floor(Math.random() * availablePositions.length);
+  return availablePositions[randomIndex];
+}
+
+function computerTurn() {
+  computerTurnTimer = undefined;
+
+  const position = getRandomAvailablePosition(player.gameboard);
+  player.gameboard.receiveAttack(position);
+  renderBoard(document.querySelector('#player-board'), player.gameboard, true);
+
+  const status = document.querySelector('#game-status');
+  if (player.gameboard.areAllShipsSunk()) {
+    gameOver = true;
+    status.textContent = 'You lose! Game over.';
+  } else {
+    isPlayerTurn = true;
+    status.textContent = "Your turn. Choose a square on the opponent's board.";
+  }
 }
 
 function startNewGame() {
+  clearTimeout(computerTurnTimer);
+  computerTurnTimer = undefined;
+  gameOver = false;
+  isPlayerTurn = true;
+
   player = new Player();
   opponent = new Player();
 
@@ -55,7 +115,6 @@ function startNewGame() {
 
   renderBoard(document.querySelector('#player-board'), player.gameboard, true);
   renderBoard(document.querySelector('#opponent-board'), opponent.gameboard, false);
-  document.querySelector('#game-status').textContent = "Your turn. Choose a square on the opponent's board.";
 }
 
 export function initializeDomController() {
